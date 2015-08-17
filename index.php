@@ -15,6 +15,7 @@ include('skeleton/head.php');
         }
         ?>
     </table>
-    <button type="button" id="sudoku-solve" onclick="caller.">Solve</button>
+    <button type="button" id="sudoku-solve" onclick="caller.submitValues()">Solve</button>
+    <button type="button" id="sudoku-test" onclick="caller.test()">Test</button>
 </div>
 <script type="text/javascript">caller.init()</script>

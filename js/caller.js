@@ -28,8 +28,14 @@ var caller = {
     },
 
     submitValues: function () {
-        $.post('./action.php?action=solve', [], function () {
+        $.post('./skeleton/action.php?action=solve', [], function () {
             window.location.reload();
+        });
+    },
+
+    test: function () {
+        $.post('./skeleton/action.php?action=test', [], function () {
+            //window.location.reload();
         });
     },
 

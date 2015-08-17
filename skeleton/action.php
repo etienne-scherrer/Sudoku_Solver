@@ -14,7 +14,9 @@ if(isset($_GET['action'])) {
             echo $storage->setField($_POST['row'], $_POST['field'], $_POST['value']);
             break;
         case 'solve':
-            echo $solver->solve();
+            $solver->solve();
+            break;
+        case 'test': $storage->makeBlocks();
             break;
     }
 }

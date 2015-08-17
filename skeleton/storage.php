@@ -1,5 +1,6 @@
 <?php
 include('definitions.php');
+
 /**
  * Created by PhpStorm.
  * User: Etienne
@@ -10,7 +11,7 @@ class Storage
 {
     public function createGrid()
     {
-        if(!isset($_SESSION['sudokuGrid'])){
+        if (!isset($_SESSION['sudokuGrid'])) {
             $_SESSION['sudokuGrid'] = [];
             for ($rows = 1; $rows <= 9; $rows++) {
                 for ($fields = 1; $fields <= 9; $fields++) {
@@ -38,6 +39,7 @@ class Storage
         if (in_array($value, $_SESSION['sudokuGrid'][$rowValue])) {
             return false;
         }
+
         foreach ($_SESSION['sudokuGrid'] as $row) {
             if ($row[$fieldValue] === (int)$value) {
                 return false;
@@ -45,5 +47,22 @@ class Storage
         }
 
         return true;
+    }
+
+    public function makeBlocks()
+    {
+        $blocks = [];
+        $usedFields = $positionStart = $blockCounter = 0;
+        do {
+            for ($rowCounter = 1; $rowCounter <= 3; $rowCounter++) {
+                for ($fieldCounter = 1; $fieldCounter <= 3; $fieldCounter++) {
+                    $blocks[$blockCounter][] = $_SESSION['sudokuGrid'][$positionStart + $rowCounter][$positionStart + $fieldCounter];
+                    $usedFields++;
+                }
+            }
+            $positionStart += 3;
+            $blockCounter++;
+        } while ($usedFields < 81);
+        var_dump($blocks);
     }
 }
