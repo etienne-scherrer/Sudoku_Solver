@@ -15,3 +15,16 @@
     vertical-align: middle;
     border: solid 1px #000000;
 }
+
+td:first-child {
+    border-left:solid;
+}
+td:nth-child(3n) {
+    border-right:solid ;
+}
+tr:first-child {
+    border-top:solid;
+}
+tr:nth-child(3n) td {
+    border-bottom:solid ;
+}

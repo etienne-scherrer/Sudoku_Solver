@@ -16,7 +16,7 @@ if(isset($_GET['action'])) {
         case 'solve':
             $solver->solve();
             break;
-        case 'test': $storage->makeBlocks();
-            break;
+        case 'reset':
+            session_destroy();
     }
 }

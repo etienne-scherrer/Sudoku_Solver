@@ -25,6 +25,7 @@ class Storage
 
     public function setField($row, $field, $value)
     {
+        $this->makeBlocks();
         if ($this->checkIfPossible($row, $field, $value)) {
             $_SESSION['sudokuGrid'][$row][$field] = (int)$value;
 
@@ -40,6 +41,13 @@ class Storage
             return false;
         }
 
+        foreach ($_SESSION['sudokuBlocks']  as $key => $block) {
+            if(array_key_exists($rowValue.$fieldValue, $block) && in_array($value, $block)) {
+                return false;
+            }
+        }
+
+
         foreach ($_SESSION['sudokuGrid'] as $row) {
             if ($row[$fieldValue] === (int)$value) {
                 return false;
@@ -52,17 +60,36 @@ class Storage
     public function makeBlocks()
     {
         $blocks = [];
-        $usedFields = $positionStart = $blockCounter = 0;
-        do {
-            for ($rowCounter = 1; $rowCounter <= 3; $rowCounter++) {
-                for ($fieldCounter = 1; $fieldCounter <= 3; $fieldCounter++) {
-                    $blocks[$blockCounter][] = $_SESSION['sudokuGrid'][$positionStart + $rowCounter][$positionStart + $fieldCounter];
-                    $usedFields++;
-                }
+        $currentBlock = $currentField = $currentRow = 1;
+        for ($totalField = 1; $totalField <= 81; $totalField++) {
+            if ($currentRow <= 3 && $currentField <= 3) {
+                $currentBlock = 1;
+            } elseif ($currentRow <= 3 && $currentField <= 6) {
+                $currentBlock = 2;
+            } elseif ($currentRow <= 3 && $currentField <= 9) {
+                $currentBlock = 3;
+            } elseif ($currentRow <= 6 && $currentField <= 3) {
+                $currentBlock = 4;
+            } elseif ($currentRow <= 6 && $currentField <= 6) {
+                $currentBlock = 5;
+            } elseif ($currentRow <= 6 && $currentField <= 9) {
+                $currentBlock = 6;
+            } elseif ($currentRow <= 9 && $currentField <= 3) {
+                $currentBlock = 7;
+            } elseif ($currentRow <= 9 && $currentField <= 6) {
+                $currentBlock = 8;
+            } elseif ($currentRow <= 9 && $currentField <= 9) {
+                $currentBlock = 9;
             }
-            $positionStart += 3;
-            $blockCounter++;
-        } while ($usedFields < 81);
-        var_dump($blocks);
+
+            $blocks[$currentBlock][$currentRow . $currentField] = $_SESSION['sudokuGrid'][$currentRow][$currentField];
+            if ($currentField === 9) {
+                $currentField = 1;
+                $currentRow++;
+            } else {
+                $currentField++;
+            }
+        }
+        $_SESSION['sudokuBlocks'] = $blocks;
     }
 }

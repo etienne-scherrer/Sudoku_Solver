@@ -21,43 +21,39 @@ var caller = {
         var fields = $('.sudoku-field');
         $.each(fields, function (index, field) {
             field = $(field);
-            var rowValue = field.attr("data-field");
-            var fieldValue = field.parent().attr("data-row");
+            var fieldValue = field.attr("data-field");
+            var rowValue = field.parent().attr("data-row");
             field.text(caller.grid[rowValue][fieldValue] || '');
         });
     },
 
     submitValues: function () {
         $.post('./skeleton/action.php?action=solve', [], function () {
-            window.location.reload();
-        });
-    },
-
-    test: function () {
-        $.post('./skeleton/action.php?action=test', [], function () {
-            //window.location.reload();
+//            window.location.reload();
         });
     },
 
     listenForChanges: function () {
         $("td[contenteditable=true]").blur(function () {
-            var messageField = $("#status-field");
+            var field = $(this);
             var data = {
-                row: $(this).attr("data-field"),
-                field: $(this).parent().attr("data-row"),
-                value: $(this).text()
+                row: field.parent().attr("data-row"),
+                field: field.attr("data-field"),
+                value: field.text()
             };
             var success = function (response) {
-                if (response != '') {
-                    messageField.show();
-                    messageField.text(response);
-                    //hide the message
-                    setTimeout(function () {
-                        //messageField.hide()
-                    }, 3000);
+                response = JSON.parse(response);
+                if (!response.status) {
+                    field.text('');
                 }
             };
             $.post('./skeleton/action.php?action=change', data, success);
+        });
+    },
+
+    reset: function() {
+        $.post('./skeleton/action.php?action=reset', [], function () {
+            window.location.reload();
         });
     }
 };

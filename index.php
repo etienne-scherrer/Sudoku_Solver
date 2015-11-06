@@ -16,6 +16,6 @@ include('skeleton/head.php');
         ?>
     </table>
     <button type="button" id="sudoku-solve" onclick="caller.submitValues()">Solve</button>
-    <button type="button" id="sudoku-test" onclick="caller.test()">Test</button>
+    <button type="button" id="sudoku-reset" onclick="caller.reset()">Reset</button>
 </div>
 <script type="text/javascript">caller.init()</script>
