@@ -3,6 +3,7 @@ include('definitions.php');
 if (isset($_GET['action'])) {
     include('storage.php');
     include('solver.php');
+    include('database.php');
     $action = $_GET['action'];
     $storage = new Storage();
     $solver = new Solver();

@@ -1,0 +1,9 @@
+#contact-form label {
+    display: inline-block;
+    width: 15%;
+    margin-bottom: 0.5em;
+}
+
+#contact-form input {
+    display: inline-block;
+}

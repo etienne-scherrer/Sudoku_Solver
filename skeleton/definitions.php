@@ -5,3 +5,5 @@
 if (!isset($_SESSION)) {
     session_start();
 }
+//get the page that will be shown
+$content = isset($_GET['page']) ? $_GET['page'] : 'home';
