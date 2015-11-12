@@ -9,109 +9,85 @@ include('definitions.php');
  */
 class Solver
 {
-    private $_possibility = [];
-    private $_grid = [];
-
     /**
      * @return string
      */
     public function solve()
     {
-//            $stop = true;
+        $_SESSION['lastState'] = $_SESSION['sudokuGrid'];
 //        do {
         foreach ($_SESSION['sudokuGrid'] as $rowKey => $row) {
             foreach ($row as $fieldKey => $fieldValue) {
                 if ($fieldValue === null) {
-//                        $stop = false;
-
-                    $this->getAllPossibilities($rowKey, $fieldKey);
-
+                    $this->getAllPossibilities();
                     $this->getCorrectFieldValue($rowKey, $fieldKey);
                 }
             }
         }
-//        } while (!$stop);
+//        } while (!$this->allFieldsSolved());
         return json_encode(['status' => 1, 'message' => 'success', 'data' => $_SESSION['sudokuGrid']]);
     }
 
     public function checkIfPossible($rowKey, $fieldKey, $value)
     {
-        $possible = false;
-        if ($this->isPossibleInRow($rowKey, $value)) {
-            $possible = true;
+        if (!$this->isPossibleInRow($rowKey, $value)) {
+            return false;
         }
 
-        if ($this->isPossibleInColumn($fieldKey, $value)) {
-            $possible = true;
+        if (!$this->isPossibleInColumn($fieldKey, $value)) {
+            return false;
         }
 
-        if ($this->isPossibleInBlock($rowKey, $fieldKey, $value)) {
-            $possible = true;
+        if (!$this->isPossibleInBlock($rowKey, $fieldKey, $value)) {
+            return false;
         }
 
-        return $possible;
+        return true;
     }
 
-    public function getAllPossibilities($rowKey, $fieldKey)
+    public function getAllPossibilities()
     {
-        for ($counter = 1; $counter <= 9; $counter++) {
-            if ($this->checkIfPossible($rowKey, $fieldKey, $counter)) {
-                $this->_possibility[$rowKey][$fieldKey][] = $counter;
+        $_SESSION['possibility'] = [];
+        foreach ($_SESSION['sudokuGrid'] as $rowKey => $row) {
+            foreach ($row as $fieldKey => $fieldValue) {
+                if ($fieldValue === null) {
+                    for ($value = 1; $value <= 9; $value++) {
+                        if ($this->checkIfPossible($rowKey, $fieldKey, $value)) {
+                            $_SESSION['possibility'][$rowKey][$fieldKey][] = $value;
+                        }
+                    }
+                }
             }
         }
     }
 
     public function getCorrectFieldValue($rowKey, $fieldKey)
     {
-        if (count($this->_possibility[$rowKey][$fieldKey]) === 1) {
-            $_SESSION['sudokuGrid'][$rowKey][$fieldKey] = $this->_possibility[$rowKey][$fieldKey][0];
+        if (!isset($_SESSION['possibility'][$rowKey][$fieldKey])) {
+            return false;
+        }
+        if (count($_SESSION['possibility'][$rowKey][$fieldKey]) === 1) {
+            $_SESSION['sudokuGrid'][$rowKey][$fieldKey] = $_SESSION['possibility'][$rowKey][$fieldKey][0];
             return true;
         }
-        foreach ($this->_possibility[$rowKey][$fieldKey] as $possible) {
+        foreach ($_SESSION['possibility'][$rowKey][$fieldKey] as $possible) {
 
-            for ($rowCounter = 0; $rowCounter < 9; $rowCounter++) {
-                if ($_SESSION['sudokuGrid'][$rowKey][$fieldKey] ||
-                    !in_array($possible, $this->_possibility[$rowCounter][$fieldKey]) ||
-                    $rowCounter !== $rowKey
-                ) {
-                    break;
-                }
+            if ($this->getPossibleAmountOfRow($fieldKey, $possible) === 1) {
+                $_SESSION['sudokuGrid'][$rowKey][$fieldKey] = $possible;
+                return true;
             }
 
-            // loop through the current row
-            for ($colCounter = 0; $colCounter < 9; $colCounter++) {
-                if ($_SESSION['sudokuGrid'][$rowKey][$fieldKey] ||
-                    in_array($possible, $this->_possibility[$rowKey][$colCounter]) ||
-                    $colCounter === $rowKey
-                ) {
-                    break;
-                }
-
+            if ($this->getPossibleAmountOfColumn($rowKey, $possible) === 1) {
+                $_SESSION['sudokuGrid'][$rowKey][$fieldKey] = $possible;
+                return true;
             }
 
-            $blockRowStart = $this->findBlockStart($rowKey);
-            $blockColStart = $this->findBlockStart($fieldKey);
-
-            for ($rowCounter = $blockRowStart; $rowCounter < $blockRowStart + 3; $rowCounter++) {
-
-                for ($blockCounter = $blockColStart; $blockCounter < $blockColStart + 3; $blockCounter++) {
-
-                    if (!$rowCounter === $rowKey || !$blockCounter === $fieldKey) {
-                        break;
-                    }
-
-                    if ($_SESSION['sudokuGrid'][$rowKey][$rowCounter]) {
-                        break;
-                    }
-
-                    if (in_array($possible, $this->_possibility[$rowCounter][$blockCounter])) {
-
-                    }
-
-                }
+            if ($this->getPossibleAmountOfBlock($rowKey, $fieldKey, $possible) === 1) {
+                $_SESSION['sudokuGrid'][$rowKey][$fieldKey] = $possible;
+                return true;
             }
         }
-        return true;
+        return false;
     }
 
     /**
@@ -120,7 +96,7 @@ class Solver
      */
     public function findBlockStart($rowOrCol)
     {
-        return (int)floor($rowOrCol / 3) * 3;
+        return ((int)floor($rowOrCol / 3) * 3);
     }
 
     /**
@@ -159,18 +135,65 @@ class Solver
         $blockRowStart = $this->findBlockStart($rowKey);
         $blockColStart = $this->findBlockStart($fieldKey);
 
-        for ($rowCounter = $blockRowStart; $rowCounter < $blockRowStart + 3; $rowCounter++) {
+        for ($colCounter = $blockColStart; $colCounter < $blockColStart + 3; $colCounter++) {
 
-            for ($colCounter = $blockColStart; $colCounter < $blockColStart + 3; $colCounter++) {
+            for ($rowCounter = $blockRowStart; $rowCounter < $blockRowStart + 3; $rowCounter++) {
 
-                if (!$rowCounter === $rowKey || !$colCounter === $fieldKey) {
+                if ($value === $_SESSION['sudokuGrid'][$rowCounter][$colCounter]) {
                     return false;
                 }
-                if (in_array($value, $this->_possibility[$rowCounter][$colCounter]))
-                    return false;
             }
         }
 
         return true;
+    }
+
+    public function getPossibleAmountOfColumn($fieldKey, $possible)
+    {
+        $possibleAmount = 0;
+        for ($rowCounter = 0; $rowCounter < 9; $rowCounter++) {
+            if (isset($_SESSION['possibility'][$rowCounter][$fieldKey])) {
+                if (in_array($possible, $_SESSION['possibility'][$rowCounter][$fieldKey])) {
+                    $possibleAmount += 1;
+                }
+            }
+        }
+
+        return $possibleAmount;
+    }
+
+    public function getPossibleAmountOfRow($rowKey, $possible)
+    {
+        $possibleAmount = 0;
+        for ($colCounter = 0; $colCounter < 9; $colCounter++) {
+            if (isset($_SESSION['possibility'][$rowKey][$colCounter])) {
+                if (in_array($possible, $_SESSION['possibility'][$rowKey][$colCounter])) {
+                    $possibleAmount += 1;
+                }
+            }
+        }
+
+        return $possibleAmount;
+    }
+
+    public function getPossibleAmountOfBlock($rowKey, $fieldKey, $possible)
+    {
+        $blockRowStart = $this->findBlockStart($rowKey);
+        $blockColStart = $this->findBlockStart($fieldKey);
+        $possibleAmount = 0;
+
+        for ($rowCounter = $blockRowStart; $rowCounter < $blockRowStart + 3; $rowCounter++) {
+
+            for ($blockCounter = $blockColStart; $blockCounter < $blockColStart + 3; $blockCounter++) {
+
+                if (isset($_SESSION['possibility'][$rowCounter][$blockCounter])) {
+                    if (in_array($possible, $_SESSION['possibility'][$rowCounter][$blockCounter])) {
+                        $possibleAmount += 1;
+                    }
+                }
+            }
+        }
+
+        return $possibleAmount;
     }
 }

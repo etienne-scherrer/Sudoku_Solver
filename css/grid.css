@@ -9,22 +9,30 @@
 
 .sudoku-field {
     border-spacing: 0;
+    max-height: 2rem;
+    max-width: 2rem;
     height: 2rem;
     width: 2rem;
     text-align: center;
     vertical-align: middle;
     border: solid 1px #000000;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 td:first-child {
-    border-left:solid;
+    border-left: solid;
 }
+
 td:nth-child(3n) {
-    border-right:solid ;
+    border-right: solid;
 }
+
 tr:first-child {
-    border-top:solid;
+    border-top: solid;
 }
+
 tr:nth-child(3n) td {
-    border-bottom:solid ;
+    border-bottom: solid;
 }

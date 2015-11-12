@@ -31,10 +31,19 @@ var caller = {
         caller.showGrid();
     },
 
+    revertStep: function () {
+        $.post('./skeleton/action.php?action=revertStep', [], function (response) {
+            response = JSON.parse(response);
+            caller.refreshGrid(response.data);
+            $('#sudoku-revert').hide();
+        });
+    },
+
     submitValues: function () {
         $.post('./skeleton/action.php?action=solve', [], function (response) {
             response = JSON.parse(response);
             caller.refreshGrid(response.data);
+            $('#sudoku-revert').show();
         });
     },
 
@@ -48,6 +57,7 @@ var caller = {
             };
             var success = function (response) {
                 response = JSON.parse(response);
+                console.log('response', response);
                 if (!response.status) {
                     field.text('');
                 }
@@ -58,7 +68,7 @@ var caller = {
 
     reset: function () {
         $.post('./skeleton/action.php?action=reset', [], function () {
-            caller.refreshGrid({});
+            caller.createGrid();
         });
     }
 };

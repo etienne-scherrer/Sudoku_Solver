@@ -3,12 +3,13 @@ include('skeleton/definitions.php');
 include('skeleton/head.php');
 ?>
 <div id="content">
+    <button type="button" id="sudoku-revert" onclick="caller.revertStep()">One step back</button>
     <div id="status-field"></div>
     <table id="sudoku-grid">
         <?php
-        for ($rows = 1; $rows <= 9; $rows++) {
+        for ($rows = 0; $rows < 9; $rows++) {
             echo '<tr class="sudoku-row" data-row="' . $rows . '">';
-            for ($fields = 1; $fields <= 9; $fields++) {
+            for ($fields = 0; $fields < 9; $fields++) {
                 echo '<td class="sudoku-field" contenteditable="true" data-field="' . $fields . '"></td>';
             }
             echo '</tr>';

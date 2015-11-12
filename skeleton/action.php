@@ -1,6 +1,6 @@
 <?php
 include('definitions.php');
-if(isset($_GET['action'])) {
+if (isset($_GET['action'])) {
     include('storage.php');
     include('solver.php');
     $action = $_GET['action'];
@@ -14,7 +14,12 @@ if(isset($_GET['action'])) {
             echo $storage->setField($_POST['row'], $_POST['field'], $_POST['value']);
             break;
         case 'solve':
-            $solver->solve();
+            echo $solver->solve();
+            break;
+        case 'revertStep':
+            $_SESSION['sudokuGrid'] = $_SESSION['lastState'];
+            echo json_encode(['data' => $_SESSION['lastState']]);
+            unset($_SESSION['lastState']);
             break;
         case 'reset':
             session_destroy();
