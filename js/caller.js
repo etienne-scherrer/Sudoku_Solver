@@ -12,8 +12,7 @@ var caller = {
     createGrid: function () {
         $.post('./skeleton/action.php?action=create', [], function (response) {
             response = JSON.parse(response);
-            caller.grid = response.data;
-            caller.showGrid();
+            caller.refreshGrid(response.data);
         });
     },
 
@@ -27,9 +26,15 @@ var caller = {
         });
     },
 
+    refreshGrid: function (gridData) {
+        caller.grid = gridData;
+        caller.showGrid();
+    },
+
     submitValues: function () {
-        $.post('./skeleton/action.php?action=solve', [], function () {
-//            window.location.reload();
+        $.post('./skeleton/action.php?action=solve', [], function (response) {
+            response = JSON.parse(response);
+            caller.refreshGrid(response.data);
         });
     },
 
@@ -51,9 +56,9 @@ var caller = {
         });
     },
 
-    reset: function() {
+    reset: function () {
         $.post('./skeleton/action.php?action=reset', [], function () {
-            window.location.reload();
+            caller.refreshGrid({});
         });
     }
 };
