@@ -72,3 +72,15 @@ footer {
 #footer-contact {
     float: right;
 }
+
+.error {
+    background-color: red;
+    text-align: center;
+    border-radius: 5px;
+}
+
+.success {
+    background-color: lightgreen;
+    text-align: center;
+    border-radius: 5px;
+}

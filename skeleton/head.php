@@ -11,3 +11,4 @@
     <script type="text/javascript" src="./js/caller.js"></script>
 </head>
 <body>
+<div id="status-message"></div>

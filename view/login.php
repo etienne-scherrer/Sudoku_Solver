@@ -1,5 +1,4 @@
 <main>
-    <div id="status-message"></div>
     <?php if(isset($_SESSION['user'])): ?>
     <h2>Logged in</h2>
     <div>You are already logged in</div>

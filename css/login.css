@@ -7,15 +7,3 @@
 #login-form input, #register-form input {
     display: inline-block;
 }
-
-.error {
-    background-color: red;
-    text-align: center;
-    border-radius: 5px;
-}
-
-.success {
-    background-color: lightgreen;
-    text-align: center;
-    border-radius: 5px;
-}

@@ -26,6 +26,20 @@ class Storage
         return json_encode(['status' => 1, 'message' => 'success', 'data' => $_SESSION['sudokuGrid']]);
     }
 
+    public function cleanGrid()
+    {
+        foreach ($_SESSION['sudokuGrid'] as $rowKey => $row) {
+            foreach ($row as $fieldKey => $fieldValue) {
+                if (!$fieldValue) {
+                    $_SESSION['sudokuGrid'][$rowKey][$fieldKey] = null;
+                } else {
+                    $_SESSION['sudokuGrid'][$rowKey][$fieldKey] = (int)$fieldValue;
+                }
+            }
+        }
+
+    }
+
     /**
      * @param integer $rowKey
      * @param integer $fieldKey

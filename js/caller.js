@@ -79,7 +79,7 @@ var caller = {
         };
         $.post('./skeleton/action.php?action=login', data, function (response) {
             response = JSON.parse(response);
-            caller.showStatusMessage(response.status, response.message);
+            caller.showStatusMessage(response.status, response.message, true);
         });
     },
 
@@ -97,15 +97,17 @@ var caller = {
         };
         $.post('./skeleton/action.php?action=register', data, function (response) {
             response = JSON.parse(response);
-            caller.showStatusMessage(response.status, response.message);
+            caller.showStatusMessage(response.status, response.message, true);
         });
     },
 
-    showStatusMessage: function (status, message) {
+    showStatusMessage: function (status, message, reload) {
         $('#status-message').show().text(message).addClass(status ? 'success' : 'error');
         setTimeout(function() {
             $('#status-message').hide().text('').removeClass();
-            window.location.reload();
+            if(reload) {
+                window.location.reload();
+            }
         }, 3000);
     },
 
@@ -115,9 +117,11 @@ var caller = {
             sudokuName: sudokuName
         };
         if(sudokuName === '') {
-            alert('Please enter a sudoku name');
+            caller.showStatusMessage(0, 'Please enter a sudoku name', false);
         } else {
             $.post('./skeleton/action.php?action=saveSudoku', data, function (response) {
+                response = JSON.parse(response);
+                caller.showStatusMessage(response.status, response.message, false);
             });
         }
     }
