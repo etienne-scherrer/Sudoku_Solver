@@ -4,19 +4,19 @@
         <h3>Saved sudokus</h3>
         <?php
         if (isset($_SESSION['user'])) {
-            $data = $db->getSudokusOfUser($_SESSION['user']['userID']);
+            $data = $database->getSudokusOfUser($_SESSION['user']['userID']);
             if (count($data)) {
                 ?>
                 <table id="sudoku-table">
                     <?php
                     foreach ($data as $key => $entry) {
-                        echo '<tr><td><a href="./?page=sudoku&sudokuId=' . $entry['sudokuId'] . '">' . $entry['sudokuName'] . '</a></td></tr>';
+                        echo '<tr><td><a href="./?page=sudoku&sudokuId=' . $entry['sudokuID'] . '">' . $entry['sudokuName'] . '</a></td></tr>';
                     }
                     ?>
                 </table>
             <?php
             } else {
-                echo 'you don\'t have any favorites';
+                echo 'you don\'t have any saved sudokus';
             }
         } else {
             echo 'please log in to see your sudokus';

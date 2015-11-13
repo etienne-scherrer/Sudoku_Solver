@@ -5,8 +5,6 @@ if (isset($_GET['action'])) {
     include('solver.php');
     include('database.php');
     $action = $_GET['action'];
-    $storage = new Storage();
-    $solver = new Solver();
     switch ($action) {
         case 'create':
             echo $storage->createGrid();
@@ -23,6 +21,18 @@ if (isset($_GET['action'])) {
             unset($_SESSION['lastState']);
             break;
         case 'reset':
-            session_destroy();
+            unset($_SESSION['sudokuGrid']);
+            break;
+        case 'register':
+            echo $database->registerUser($_POST['username'], md5($_POST['password']), md5($_POST['password2']));
+            break;
+        case 'login':
+            echo $database->loginUser($_POST['username'], md5($_POST['password']));
+            break;
+        case 'logout':
+            unset($_SESSION['user']);
+            break;
+        case 'saveSudoku':
+            echo $database->saveSudokuForUser($_SESSION['user']['userID'], serialize($_POST['sudokuData']), $_POST['sudokuName']);
     }
 }

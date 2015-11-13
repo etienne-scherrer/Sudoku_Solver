@@ -1,6 +1,7 @@
 <?php
 include('skeleton/definitions.php');
 include('skeleton/head.php');
+include('skeleton/database.php');
 echo '<div id="content">';
 include('skeleton/header.php');
 if (!file_exists('./view/' . $content . '.php')) {

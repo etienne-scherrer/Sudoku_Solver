@@ -1,4 +1,13 @@
-<button type="button" id="sudoku-revert" onclick="caller.revertStep()">One step back</button>
+<?php
+if(isset($_GET['sudokuId']) && isset($_SESSION['user'])) {
+    $sudokuData = $database->getSudokuDataByID($_GET['sudokuId']);
+    if($_SESSION['user']['userID'] === $sudokuData['userID']) {
+        $_SESSION['sudokuGrid'] = unserialize($sudokuData['sudokuData']);
+    }
+}
+?>
+<label>Sudoku name<input type="text" id="sudoku-name"></label>
+<button type="button" id="sudoku-save" onclick="caller.save($('#sudoku-name').val())">Save for later</button>
 <div id="status-field"></div>
 <table id="sudoku-grid">
     <?php

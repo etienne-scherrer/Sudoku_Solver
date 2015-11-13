@@ -72,3 +72,4 @@ class Storage
         return (is_numeric($value) && $value > 0 && $value <= 9 || $value === null);
     }
 }
+$storage = new Storage();

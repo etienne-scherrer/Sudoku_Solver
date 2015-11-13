@@ -2,7 +2,7 @@
     <hr>
     <div id="footer-container">
         <span>By Etienne Scherrer & Marco Weber</span>
-        <span id="footer-contact"><a href="./?page=contact">Contact me</a></span>
+        <span id="footer-contact"><a href="#" onclick="caller.logout()">Logout</a></span>
     </div>
 </footer>
 </body>

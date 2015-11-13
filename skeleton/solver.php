@@ -197,3 +197,4 @@ class Solver
         return $possibleAmount;
     }
 }
+$solver = new Solver();
